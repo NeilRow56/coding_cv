@@ -1,6 +1,9 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import React from 'react'
+import GeneralInfoForm from './forms/GeneralInfoForm'
 
 export default function ResumeEditor() {
   return (
@@ -12,11 +15,13 @@ export default function ResumeEditor() {
           saved automatically.
         </p>
       </header>
-      <main className='relative grow bg-green-100'>
+      <main className='relative grow'>
         <div className='absolute bottom-0 top-0 flex w-full'>
-          <div className='w-full bg-red-50 md:w-1/2'>Left</div>
+          <div className='w-full p-3 md:w-1/2'>
+            <GeneralInfoForm />
+          </div>
           <div className='grow md:border-r' />
-          <div className='hidden w-1/2 bg-blue-50 md:flex'>Right</div>
+          <div className='hidden w-1/2 bg-neutral-50 md:flex'>Right</div>
         </div>
       </main>
       <footer className='w-full border-t px-3 py-5'>
