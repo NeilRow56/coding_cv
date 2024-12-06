@@ -33,7 +33,8 @@ export default function EducationForm({
       if (!isValid) return
       setResumeData({
         ...resumeData,
-        educations: values.educations?.filter(exp => exp !== undefined) || []
+        educations:
+          values.educations?.filter(education => education !== undefined) || []
       })
     })
     return unsubscribe

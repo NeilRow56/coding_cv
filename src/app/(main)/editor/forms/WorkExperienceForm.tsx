@@ -36,7 +36,9 @@ export default function WorkExperienceForm({
       setResumeData({
         ...resumeData,
         workExperiences:
-          values.workExperiences?.filter(exp => exp !== undefined) || []
+          values.workExperiences?.filter(
+            experience => experience !== undefined
+          ) || []
       })
     })
     return unsubscribe
