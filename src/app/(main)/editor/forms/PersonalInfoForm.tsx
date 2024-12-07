@@ -12,7 +12,7 @@ import { EditorFormProps } from '@/lib/types'
 
 import { personalInfoSchema, PersonalInfoValues } from '@/lib/validation'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { useForm } from 'react-hook-form'
 
@@ -42,6 +42,8 @@ export default function PersonalInfoForm({
     return unsubscribe
   }, [form, resumeData, setResumeData])
 
+  const photoInputRef = useRef<HTMLInputElement>(null)
+
   return (
     <div className='mx-auto max-w-xl space-y-6'>
       <div className='space-y-1.5 text-center'>
@@ -66,9 +68,19 @@ export default function PersonalInfoForm({
                         const file = e.target.files?.[0]
                         fieldValues.onChange(file)
                       }}
+                      ref={photoInputRef}
                     />
                   </FormControl>
-                  <Button variant='secondary' type='button' onClick={() => {}}>
+                  <Button
+                    variant='secondary'
+                    type='button'
+                    onClick={() => {
+                      fieldValues.onChange(null)
+                      if (photoInputRef.current) {
+                        photoInputRef.current.value = ''
+                      }
+                    }}
+                  >
                     Remove
                   </Button>
                 </div>
