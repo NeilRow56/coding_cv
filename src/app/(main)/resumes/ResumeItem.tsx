@@ -24,6 +24,8 @@ import { formatDate } from 'date-fns'
 import { MoreVertical, Printer, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
+import { deleteResume } from './action'
+import LoadingButton from '@/components/LoadingButton'
 
 interface ResumeItemProps {
   resume: ResumeServerData
@@ -61,16 +63,17 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           <div className='absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent' />
         </Link>
       </div>
+      <MoreMenu resumeId={resume.id} />
     </div>
   )
 }
 
 interface MoreMenuProps {
   resumeId: string
-  onPrintClick: () => void
+  //   onPrintClick: () => void
 }
 
-function MoreMenu({ resumeId, onPrintClick }: MoreMenuProps) {
+function MoreMenu({ resumeId }: MoreMenuProps) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false)
 
   return (
@@ -80,7 +83,7 @@ function MoreMenu({ resumeId, onPrintClick }: MoreMenuProps) {
           <Button
             variant='ghost'
             size='icon'
-            className='absolute right-0.5 top-0.5 opacity-0 transition-opacity group-hover:opacity-100'
+            className='absolute right-0.5 top-0.5 opacity-25 transition-opacity group-hover:opacity-100'
           >
             <MoreVertical className='size-4' />
           </Button>
@@ -95,7 +98,7 @@ function MoreMenu({ resumeId, onPrintClick }: MoreMenuProps) {
           </DropdownMenuItem>
           <DropdownMenuItem
             className='flex items-center gap-2'
-            onClick={onPrintClick}
+            // onClick={onPrintClick}
           >
             <Printer className='size-4' />
             Print
@@ -126,20 +129,20 @@ function DeleteConfirmationDialog({
 
   const [isPending, startTransition] = useTransition()
 
-  //   async function handleDelete() {
-  //     startTransition(async () => {
-  //       try {
-  //         await deleteResume(resumeId);
-  //         onOpenChange(false);
-  //       } catch (error) {
-  //         console.error(error);
-  //         toast({
-  //           variant: "destructive",
-  //           description: "Something went wrong. Please try again.",
-  //         });
-  //       }
-  //     });
-  //   }
+  async function handleDelete() {
+    startTransition(async () => {
+      try {
+        await deleteResume(resumeId)
+        onOpenChange(false)
+      } catch (error) {
+        console.error(error)
+        toast({
+          variant: 'destructive',
+          description: 'Something went wrong. Please try again.'
+        })
+      }
+    })
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -152,17 +155,19 @@ function DeleteConfirmationDialog({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          {/* <LoadingButton
-            variant="destructive"
-            onClick={handleDelete}
-            loading={isPending}
-          >
-            Delete
-          </LoadingButton> */}
-          LOADING BUTTON
-          <Button variant='secondary' onClick={() => onOpenChange(false)}>
-            Cancel
-          </Button>
+          <div className='flex w-full justify-between'>
+            <LoadingButton
+              variant='destructive'
+              onClick={handleDelete}
+              loading={isPending}
+            >
+              Delete
+            </LoadingButton>
+
+            <Button variant='secondary' onClick={() => onOpenChange(false)}>
+              Cancel
+            </Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>
