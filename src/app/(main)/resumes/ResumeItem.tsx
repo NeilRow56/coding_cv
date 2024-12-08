@@ -19,11 +19,11 @@ import {
 import { useToast } from '@/hooks/use-toast'
 import { ResumeServerData } from '@/lib/types'
 import { mapToResumeValues } from '@/lib/utils'
+
 import { formatDate } from 'date-fns'
 import { MoreVertical, Printer, Trash2 } from 'lucide-react'
 import Link from 'next/link'
-import { useRef, useState, useTransition } from 'react'
-import { useReactToPrint } from 'react-to-print'
+import { useState, useTransition } from 'react'
 
 interface ResumeItemProps {
   resume: ResumeServerData
@@ -54,7 +54,11 @@ export default function ResumeItem({ resume }: ResumeItemProps) {
           href={`/editor?resumeId=${resume.id}`}
           className='relative inline-block w-full'
         >
-          RESUME PREVIEW
+          <ResumePreview
+            resumeData={mapToResumeValues(resume)}
+            className='overflow-hidden shadow-sm transition-shadow group-hover:shadow-lg'
+          />
+          <div className='absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent' />
         </Link>
       </div>
     </div>
