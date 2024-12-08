@@ -1,19 +1,21 @@
+import { BorderStyles } from '@/app/(main)/editor/BorderStyleButton'
 import useDimensions from '@/hooks/useDimensions'
 import { cn } from '@/lib/utils'
 import { ResumeValues } from '@/lib/validation'
+import { formatDate } from 'date-fns'
 import Image from 'next/image'
 import React, { useEffect, useRef, useState } from 'react'
 import { Badge } from './ui/badge'
-import { formatDate } from 'date-fns'
-import { BorderStyles } from '@/app/(main)/editor/BorderStyleButton'
 
 interface ResumePreviewProps {
   resumeData: ResumeValues
+  contentRef?: React.Ref<HTMLDivElement>
   className?: string
 }
 
 export default function ResumePreview({
   resumeData,
+  contentRef,
   className
 }: ResumePreviewProps) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -23,7 +25,6 @@ export default function ResumePreview({
   return (
     <div
       className={cn(
-        // aspect ratio below represents a sheet of A4 paper
         'aspect-[210/297] h-fit w-full bg-white text-black',
         className
       )}
@@ -34,8 +35,9 @@ export default function ResumePreview({
         style={{
           zoom: (1 / 794) * width
         }}
+        ref={contentRef}
+        id='resumePreviewContent'
       >
-        {/* <pre>{JSON.stringify(resumeData, null, 2)}</pre> */}
         <PersonalInfoHeader resumeData={resumeData} />
         <SummarySection resumeData={resumeData} />
         <WorkExperienceSection resumeData={resumeData} />
@@ -155,7 +157,7 @@ function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
   const { workExperiences, colorHex } = resumeData
 
   const workExperiencesNotEmpty = workExperiences?.filter(
-    experience => Object.values(experience).filter(Boolean).length > 0
+    exp => Object.values(exp).filter(Boolean).length > 0
   )
 
   if (!workExperiencesNotEmpty?.length) return null
@@ -177,28 +179,24 @@ function WorkExperienceSection({ resumeData }: ResumeSectionProps) {
         >
           Work experience
         </p>
-        {workExperiencesNotEmpty.map((experience, index) => (
+        {workExperiencesNotEmpty.map((exp, index) => (
           <div key={index} className='break-inside-avoid space-y-1'>
             <div
               className='flex items-center justify-between text-sm font-semibold'
-              //   style={{
-              //     color: colorHex
-              //   }}
+              style={{
+                color: colorHex
+              }}
             >
-              <span>{experience.position}</span>
-              {experience.startDate && (
+              <span>{exp.position}</span>
+              {exp.startDate && (
                 <span>
-                  {formatDate(experience.startDate, 'MM/yyyy')} -{' '}
-                  {experience.endDate
-                    ? formatDate(experience.endDate, 'MM/yyyy')
-                    : 'Present'}
+                  {formatDate(exp.startDate, 'MM/yyyy')} -{' '}
+                  {exp.endDate ? formatDate(exp.endDate, 'MM/yyyy') : 'Present'}
                 </span>
               )}
             </div>
-            <p className='text-xs font-semibold'>{experience.company}</p>
-            <div className='whitespace-pre-line text-xs'>
-              {experience.description}
-            </div>
+            <p className='text-xs font-semibold'>{exp.company}</p>
+            <div className='whitespace-pre-line text-xs'>{exp.description}</div>
           </div>
         ))}
       </div>
@@ -236,9 +234,9 @@ function EducationSection({ resumeData }: ResumeSectionProps) {
           <div key={index} className='break-inside-avoid space-y-1'>
             <div
               className='flex items-center justify-between text-sm font-semibold'
-              //   style={{
-              //     color: colorHex
-              //   }}
+              style={{
+                color: colorHex
+              }}
             >
               <span>{edu.degree}</span>
               {edu.startDate && (
@@ -284,7 +282,7 @@ function SkillsSection({ resumeData }: ResumeSectionProps) {
               key={index}
               className='rounded-md bg-black text-white hover:bg-black'
               style={{
-                // backgroundColor: colorHex,
+                backgroundColor: colorHex,
                 borderRadius:
                   borderStyle === BorderStyles.SQUARE
                     ? '0px'
